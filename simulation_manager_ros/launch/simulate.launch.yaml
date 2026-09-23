@@ -1,0 +1,44 @@
+---
+launch:
+  - arg:
+      name: python_env
+      default: /developer/semantics_env/bin/python3
+      description: Path to Python executable in the virtualenv
+  - arg:
+      name: simulation_manager_config
+      default: $(find-pkg-share simulation_manager_ros)/config/habitat_open_eqa.yaml
+      description: Path to the simulation manager configuration file
+  - arg:
+      name: launch_file
+      default: habitat_eqa.launch.yaml
+      description: Path to the launch file to start the simulation
+  - arg:
+      name: launch_pkg
+      default: hvlm_planner_ros
+      description: Package where the launch file is located
+  - node:
+      pkg: simulation_manager_ros
+      exec: habitat_eqa_manager_node.py
+      name: habitat_eqa_manager_node
+      on_exit: shutdown
+      launch-prefix: $(var python_env)
+      output: screen
+      param:
+        - name: config_path
+          value: $(var simulation_manager_config)
+        - name: config
+          type: str
+          value: |-
+            launch_file: $(var launch_file)
+            launch_pkg: $(var launch_pkg)
+      remap:
+        - from: monitor
+          to: /hvlm_planner/search_manager/monitor
+        - from: eqa_output
+          to: /hvlm_planner/vlms/eqa_planner_output
+        - from: trigger_episode
+          to: /hvlm_planner/search_manager/trigger_step
+        - from: agent_path
+          to: /hvlm_planner/low_level/planned_path
+        - from: habitat_agent_path
+          to: /habitat/goal_path

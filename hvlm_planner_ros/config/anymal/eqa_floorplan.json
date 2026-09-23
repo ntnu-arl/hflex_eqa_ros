@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    "corridor 0",
+    "corridor 1",
+    "lunch room 0",
+    "office 0",
+    "office 1",
+    "stairway 0"
+  ],
+  "edges": [
+    [
+      "corridor 0",
+      "corridor 1"
+    ],
+    [
+      "corridor 1",
+      "lunch room 0"
+    ],
+    [
+      "corridor 1",
+      "office 0"
+    ],
+    [
+      "corridor 1",
+      "stairway 0"
+    ],
+    [
+      "corridor 0",
+      "office 1"
+    ]
+  ]
+}

@@ -1,0 +1,114 @@
+---
+launch:
+  # ROS args
+  - arg: {name: use_sim_time, default: 'false', description: Use ROS sim time}
+
+  # Robot args
+  - arg: {name: robot_id, default: '0', description: Unique robot identifier}
+  - arg: {name: robot_frame, default: base_link, description: Robot body tf frame}
+  - arg: {name: odom_frame, default: world, description: Odometry (map) frame}
+  - arg: {name: map_frame, default: map, description: Backend scene graph frame}
+
+  # Semantic args
+  - arg: {name: gt_semantics, default: 'false', description: Whether to use ground-truth semantics (for evaluation)}
+  - arg: {name: use_task_labels, default: 'false', description: Whether to use task-specific labels}
+  - arg: {name: labelspace, default: $(if $(var gt_semantics) hm3dall $(if $(var use_task_labels) variable hm3d)), description: Closed-set semantics description}
+
+  # Config args
+  - arg: {name: config_path_sm, default: $(find-pkg-share hvlm_planner)/config/anymal/low_level.yaml, description: Input config}
+  - arg: {name: input_config_path_sm, default: $(find-pkg-share hvlm_planner_ros)/config/anymal/graph_receiver.yaml, description: ROS input config}
+
+  # Topics
+  - arg:
+      name: dsg_topic_sm
+      default: /hydra/backend/dsg
+      description: Topic to subscribe for DSG updates
+  - arg:
+      name: occupancy_grid_topic
+      default: /hydra/reconstruction/occupancy
+      description: Topic to subscribe for occupancy grid updates
+  - arg:
+      name: image_topic
+      default: /hydra/backend/image
+      description: Topic to subscribe for RGB images
+  - arg:
+      name: question_topic
+      default: /eqa_question
+      description: Topic to subscribe for user questions
+  - arg:
+      name: ready_topic
+      default: /eqa/ready
+      description: Topic to subscribe for ready signal
+  - arg:
+      name: eqa_output_topic
+      default: /hvlm_planner/vlms/eqa_output
+      description: Topic to publish EQA outputs
+  - arg:
+      name: hlp_output_topic
+      default: /hvlm_planner/vlms/high_level_planner_output
+      description: Topic to publish HLP outputs
+  - arg:
+      name: task_parsing_output_topic
+      default: /task_parsing/output
+      description: Topic to subscribe for task parsing outputs from the TaskParser module
+  - arg:
+      name: new_labels_topic
+      default: /hydra/labels/new_labels
+      description: Topic to subscribe for new labels
+  - arg:
+      name: question_rooms_embeddings_topic
+      default: /hvlm_planner/vlms/question_rooms_embeddings
+      description: Topic to subscribe for question, room labels and room embeddings
+  - arg:
+      name: eqa_planner_output_topic
+      default: /hvlm_planner/vlms/eqa_planner_output
+      description: Topic to subscribe for EQA planner outputs from the SearchManager module
+  - arg:
+      name: failed_sim_goal_topic
+      default: /habitat/failed_goal
+      description: Topic to subscribe for failed simulation goal signals from the SearchManager module
+  # Question
+  - arg:
+      name: question
+      default: ''
+      description: Optional question to override the one in the question file
+
+  # Services
+  - arg:
+      name: trigger_eqa_service
+      default: /hvlm_planner/vlms/trigger_qa
+      description: Service to trigger EQA module to answer the current question
+  - arg:
+      name: trigger_hlp_service
+      default: /hvlm_planner/vlms/trigger_planner
+      description: Service to trigger HLP module to generate a plan for the current question
+  - arg:
+      name: task_parsing_service
+      default: /task_parsing/parse
+      description: Topic to subscribe for task parsing outputs from the TaskParser module
+  - include:
+      file: $(find-pkg-share hvlm_planner_ros)/launch/search_manager.launch.yaml
+      arg:
+        - {name: use_sim_time, value: $(var use_sim_time)}
+        - {name: robot_id, value: $(var robot_id)}
+        - {name: robot_frame, value: $(var robot_frame)}
+        - {name: odom_frame, value: $(var odom_frame)}
+        - {name: map_frame, value: $(var map_frame)}
+        - {name: use_task_labels, value: $(var use_task_labels)}
+        - {name: labelspace, value: $(var labelspace)}
+        - {name: config_path, value: $(var config_path_sm)}
+        - {name: input_config_path, value: $(var input_config_path_sm)}
+        - {name: dsg_topic, value: $(var dsg_topic_sm)}
+        - {name: occupancy_grid_topic, value: $(var occupancy_grid_topic)}
+        - {name: image_topic, value: $(var image_topic)}
+        - {name: question_topic, value: $(var question_topic)}
+        - {name: ready_topic, value: $(var ready_topic)}
+        - {name: eqa_output_topic, value: $(var eqa_output_topic)}
+        - {name: hlp_output_topic, value: $(var hlp_output_topic)}
+        - {name: task_parsing_output_topic, value: $(var task_parsing_output_topic)}
+        - {name: new_labels_topic, value: $(var new_labels_topic)}
+        - {name: eqa_planner_output_topic, value: $(var eqa_planner_output_topic)}
+        - {name: question, value: $(var question)}
+        - {name: trigger_eqa_service, value: $(var trigger_eqa_service)}
+        - {name: trigger_hlp_service, value: $(var trigger_hlp_service)}
+        - {name: task_parsing_service, value: $(var task_parsing_service)}

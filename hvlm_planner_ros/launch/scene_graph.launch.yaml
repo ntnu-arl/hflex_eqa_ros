@@ -1,0 +1,68 @@
+---
+launch:
+  - arg: {name: use_task_labels, default: 'false'}
+  - arg: {name: labelspace, default: $(if $(var use_task_labels) variable hm3d)}
+  - arg: {name: use_openset_places, default: 'false'}
+  - arg: {name: use_openset_segmentation, default: 'true'}
+  - arg: {name: semantic_colormap_file, default: ''}
+  - arg: {name: vlm_room_classification, default: 'false'}
+  - arg: {name: start_visualizer, default: 'true'}
+  - arg: {name: log_path, default: /developer/results/hydra}
+  - set_remap: {from: hydra/input/left_cam/depth_registered/image_rect, to: /camera/camera/aligned_depth_to_color/image_raw}
+  - set_remap: {from: hydra/input/left_cam/rgb/image_raw, to: /camera/camera/color/image_raw}
+  - set_remap: {from: hydra/input/left_cam/rgb/camera_info, to: /camera/camera/color/camera_info}
+  - set_remap: {from: hydra/input/left_cam/semantic/image_raw, to: /semantic_inference/semantic/image_raw}
+  - set_remap: {from: hydra/input/left_cam/semantic/full_features, to: /semantic_inference/semantic/full_features}
+  - set_remap: {from: hydra/input/left_cam/feature, to: /semantic_inference/semantic/feature}
+  - set_remap: {from: hydra/backend/room_classification_output, to: /room_classification/room_classification_output}
+  - set_remap: {from: hydra/global_frontiers/feature_vector, to: /semantic_inference/prompt_embedding}
+  - set_remap: {from: hydra/reconstruction/feature_vector, to: /semantic_inference/prompt_embedding}
+  - set_remap: {from: hydra_visualizer/frontier_feature_vector, to: /semantic_inference/prompt_embedding}
+  - set_remap: {from: hydra/labels/eqa_planner_output, to: /hvlm_planner/vlms/eqa_planner_output}
+  - group:
+      - set_remap: {from: new_labels, to: /hydra/labels/new_labels}
+      - include:
+          if: $(var use_task_labels)
+          file: $(find-pkg-share vlms_ros)/launch/task_parsing.launch.yaml
+  - group:
+      - set_remap: {from: rooms_info, to: /hydra/backend/rooms_info}
+      - include:
+          if: $(var vlm_room_classification)
+          file: $(find-pkg-share vlms_ros)/launch/room_classification.launch.yaml
+  - group:
+      - set_remap: {from: color/image_raw, to: /camera/camera/color/image_raw}
+      - set_remap: {from: depth/image_raw, to: /camera/camera/aligned_depth_to_color/image_raw}
+      - set_remap: {from: camera_info, to: /camera/camera/color/camera_info}
+      - set_remap: {from: new_labels, to: /hydra/labels/new_labels}
+      - set_remap: {from: eqa_planner_output, to: /hvlm_planner/vlms/eqa_planner_output}
+      - include:
+          if: $(not $(var use_openset_segmentation))
+          file: $(find-pkg-share semantic_inference_ros)/launch/closed_set.launch.yaml
+          arg:
+            - {name: labelspace_name, value: $(var labelspace)}
+      - include:
+          if: $(var use_openset_segmentation)
+          file: $(find-pkg-share semantic_inference_ros)/launch/openset_segmentation.launch.yaml
+          arg:
+            - {name: labelspace_name, value: $(var labelspace)}
+            - {name: labelspace_dir, value: $(find-pkg-share hydra)/config/label_spaces}
+            - {name: colormap_path, value: $(find-pkg-share semantic_inference_ros)/config/distinct_hm3d_1000_colors.csv}
+            - {name: use_task_labels, value: $(var use_task_labels)}
+      - include:
+          if: $(var use_openset_places)
+          file: $(find-pkg-share semantic_inference_ros)/launch/image_embedding_node.launch.yaml
+          arg:
+            - {name: min_period_s, value: '0.2'}
+  - include:
+      file: $(find-pkg-share hydra_ros)/launch/hydra.launch.yaml
+      arg:
+        - {name: dataset, value: anymal}
+        - {name: labelspace, value: $(var labelspace)}
+        - {name: sensor_frame, value: camera_link}
+        - {name: robot_frame, value: body}
+        - {name: odom_frame, value: world}
+        - {name: map_frame, value: world}
+        - {name: rviz_config_name, value: anymal}
+        - {name: log_path, value: $(var log_path)}
+        - {name: semantic_colormap_file, value: $(var semantic_colormap_file)}
+        - {name: start_visualizer, value: $(var start_visualizer)}

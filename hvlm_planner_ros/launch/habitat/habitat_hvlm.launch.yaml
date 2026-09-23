@@ -1,0 +1,20 @@
+---
+launch:
+  - arg:
+      name: question_topic
+      default: /habitat/question
+      description: Topic to subscribe for user questions
+  - arg:
+      name: question
+      default: ''
+      description: Optional question to override the one in the config files
+  - include:
+      file: $(find-pkg-share hvlm_planner_ros)/launch/habitat/habitat_high_level.launch.yaml
+      arg:
+        - {name: question_topic, value: $(var question_topic)}
+        - {name: question, value: $(var question)}
+  - include:
+      file: $(find-pkg-share hvlm_planner_ros)/launch/habitat/habitat_search_manager.launch.yaml
+      arg:
+        - {name: question_topic, value: $(var question_topic)}
+        - {name: question, value: $(var question)}

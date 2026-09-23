@@ -1,0 +1,9 @@
+std_msgs/Header header
+string mode
+uint64 target_room_id
+uint64[] target_object_ids
+string sg_description
+string[] images_description
+string reasoning
+float32 confidence
+bool valid

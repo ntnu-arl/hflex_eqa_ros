@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>hvlm_planner_ros</name>
+  <version>1.0.0</version>
+  <description>Hierarchical VLM planner ROS nodes</description>
+  <author email="albert.g.puigjaner@ntnu.no">Albert Gassol Puigjaner</author>
+  <maintainer email="albert.g.puigjaner@ntnu.no">Albert Gassol Puigjaner</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <depend>config_utilities</depend>
+  <depend>config_utilities_ros</depend>
+  <depend>cv_bridge</depend>
+  <depend>hydra</depend>
+  <depend>hvlm_planner</depend>
+  <depend>hvlm_planner_python</depend>
+  <depend>hydra_msgs</depend>
+  <depend>ianvs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_components</depend>
+  <depend>tf2_eigen</depend>
+  <depend>tf2_ros</depend>
+  <depend>visualization_msgs</depend>
+  <depend>semantic_inference_msgs</depend>
+  <depend>spark_dsg</depend>
+  <depend>vlm_msgs</depend>
+  <depend>hvlm_planner_msgs</depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>habitat_ros</exec_depend>
+  <exec_depend>hydra_ros</exec_depend>
+  <exec_depend>hydra_visualizer</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>semantic_inference_ros</exec_depend>
+  <exec_depend>vlms_ros</exec_depend>
+  <export>
+      <build_type>ament_cmake</build_type>
+  </export>
+</package>

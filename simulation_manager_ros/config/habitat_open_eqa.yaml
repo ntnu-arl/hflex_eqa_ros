@@ -1,0 +1,23 @@
+---
+max_episodes: 50
+frequency: 1.0
+launch_wait_s: 10.0
+log_folder: /developer/results/hflex_eqa
+skip_existing: true
+trigger: true
+use_floorplan_prior: true
+use_choices: true
+gt_semantics: false
+data:
+  dataset: exploreeqa
+  scene_data_path: /developer/hm3d
+  semantic_annot_data_path: /developer/hm3d/hm3d_annotated_basis.scene_dataset_config.json
+  openeqa_question_data_path: /developer/hm3d/open-eqa-v0.json
+  openeqa_init_pose_data_path: /developer/hm3d/openeqa_init_trajs.json
+  openeqa_choices_data_path: /developer/hm3d/open-eqa-choices.json
+  exploreeqa_question_data_path: /developer/hm3d/explore_eqa_questions.csv
+  exploreeqa_init_pose_data_path: /developer/hm3d/explore_eqa_scene_init_poses.csv
+  use_semantic_data: true
+  use_multifloor_questions: false
+  load_test_split_only: false
+  test_split_manifest_path: /developer/hm3d/eqa_test_splits.json

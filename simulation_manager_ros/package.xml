@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>simulation_manager_ros</name>
+  <version>1.0.0</version>
+  <description>Simulation manager for hierarchical VLM planner</description>
+  <author email="albert.g.puigjaner@ntnu.no">Albert Gassol Puigjaner</author>
+  <maintainer email="albert.g.puigjaner@ntnu.no">Albert Gassol Puigjaner</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <depend>config_utilities</depend>
+  <depend>config_utilities_ros</depend>
+  <depend>hydra_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>hvlm_planner_msgs</depend>
+
+  <exec_depend>rclpy</exec_depend>
+  <export>
+      <build_type>ament_cmake</build_type>
+  </export>
+</package>

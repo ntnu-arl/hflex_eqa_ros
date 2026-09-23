@@ -1,0 +1,5 @@
+---
+input_receiver:
+  graph:
+    type: GraphFromRos
+    wrapper_ns: ~/input

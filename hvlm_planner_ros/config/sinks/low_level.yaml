@@ -1,0 +1,9 @@
+---
+sinks:
+  - type: LowLevelPublisher
+    point_scale: .1
+    line_width: .05
+    poses_color: [0, 0, 255, 255]
+    connecting_line_color: [128, 128, 128, 255]
+    downsample_waypoints_factor: 1
+    add_points: false

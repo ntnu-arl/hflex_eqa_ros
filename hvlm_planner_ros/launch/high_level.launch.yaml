@@ -1,0 +1,136 @@
+---
+launch:
+  # Python environment
+  - arg:
+      name: python_env
+      default: /developer/semantics_env/bin/python3
+      description: Path to Python executable in the virtualenv
+
+  # Configuration files
+  - arg:
+      name: config_path
+      description: Configuration file for high level planner
+  - arg:
+      name: ros_config_path
+      description: Configuration file for ROS node parameters
+  - arg:
+      name: log_folder
+      default: ''
+      description: Logging folder
+
+  # Prompts
+  - arg:
+      name: planner_vlm_prompt_path
+      description: Path to the system prompt for the VLM planner
+  - arg:
+      name: eqa_prompt_path
+      description: Path to the user prompt for the VLM planner
+  - arg:
+      name: room_classification_prompt_path
+      description: Path to the system prompt for the room classification VLM
+
+  # Question
+  - arg:
+      name: question
+      default: ''
+      description: Optional question to override the one in the question file
+
+  # Floorplan graph
+  - arg:
+      name: floorplan_nodes
+      description: JSON list of nodes in the floorplan graph
+  - arg:
+      name: floorplan_edges
+      description: JSON list of edges in the floorplan graph, where each edge is a list of two nodes
+  - arg:
+      name: floorplan_source
+      default: list
+      description: Floorplan source to use. Set to 'list' for floorplan_nodes/floorplan_edges or 'json' for floorplan_json_path.
+  - arg:
+      name: floorplan_json_path
+      default: ''
+      description: Path to a JSON file containing floorplan graph nodes and edges
+  - arg:
+      name: use_floorplan_prior
+      default: 'false'
+      description: Whether to include the floorplan prior in the VLM prompt
+
+  # Choices for question answering
+  - arg:
+      name: use_choices
+      default: 'false'
+  - arg:
+      name: choices
+      default: '[]'
+      description: list of choices for the question, if applicable
+
+  # Topics
+  - arg:
+      name: dsg_topic
+      default: /dsg_updates
+      description: Topic to subscribe for DSG updates
+  - arg:
+      name: image_topic
+      default: /image
+      description: Topic to subscribe for image updates
+  - arg:
+      name: objects_views_topic
+      default: /objects_views
+      description: Topic to subscribe for objects views updates
+  - arg:
+      name: question_topic
+      default: /question
+      description: Topic to subscribe for user questions
+  - arg:
+      name: choices_topic
+      default: /eqa_choices
+      description: Topic to subscribe for answer choice lists as JSON arrays
+  - arg:
+      name: task_parsing_output_topic
+      default: /task_parsing_output
+      description: Topic to publish task parsing output
+  - node:
+      pkg: hvlm_planner_ros
+      exec: vlms_node.py
+      name: vlms_node
+      namespace: hvlm_planner/vlms
+      on_exit: shutdown
+      launch-prefix: $(var python_env)
+      output: screen
+      param:
+        - name: config_path
+          value: $(var config_path)
+        - name: ros_config_path
+          value: $(var ros_config_path)
+        - name: config
+          type: str
+          value: |-
+            eqa_planner:
+              vlm:
+                system_prompt_path: $(var eqa_prompt_path)
+              room_classification:
+                system_prompt_path: $(var room_classification_prompt_path)
+              floorplan_graph:
+                nodes: $(var floorplan_nodes)
+                edges: $(var floorplan_edges)
+              floorplan_source: $(var floorplan_source)
+              floorplan_json_path: $(var floorplan_json_path)
+              use_floorplan_prior: $(var use_floorplan_prior)
+              use_choices: $(var use_choices)
+              choices: $(var choices)
+              log_folder: $(var log_folder)
+        - name: question
+          value: $(var question)
+      remap:
+        - from: dsg_update
+          to: $(var dsg_topic)
+        - from: image
+          to: $(var image_topic)
+        - from: objects_views
+          to: $(var objects_views_topic)
+        - from: question
+          to: $(var question_topic)
+        - from: choices
+          to: $(var choices_topic)
+        - from: task_parsing_output
+          to: $(var task_parsing_output_topic)

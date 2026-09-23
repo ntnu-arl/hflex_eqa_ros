@@ -1,0 +1,5 @@
+---
+worker:
+  dsg_config:
+    force_full_load: true
+    clear_change: false

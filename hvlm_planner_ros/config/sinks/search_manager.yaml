@@ -1,0 +1,14 @@
+---
+sinks:
+  - type: SearchManagerPublisher
+    z_offset: 0.2
+    z_text_offset: 0.2
+    frontier_scale: 0.1
+    text_scale: 0.2
+    direction_length: 0.3
+    direction_shaft_diameter: 0.02
+    direction_head_diameter: 0.04
+    direction_head_length: 0.06
+    blacklist_frontier_color: [127, 127, 127, 255]
+monitor_sinks:
+  - type: MonitorPublisher
