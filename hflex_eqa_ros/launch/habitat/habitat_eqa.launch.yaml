@@ -1,0 +1,44 @@
+---
+launch:
+  - arg: {name: scene_file, default: /developer/hm3d/val/00800-TEEsavR23oF/TEEsavR23oF.basis.glb, description: Habitat scene file to load}
+  - arg: {name: question, default: '', description: Optional question to override the one in the config files}
+  - arg: {name: log_path, default: $(env HOME)/.hydra, description: Directory to output to}
+  - arg: {name: floorplan_nodes, default: '[]'}
+  - arg: {name: floorplan_edges, default: '[]'}
+  - arg: {name: floorplan_source, default: list}
+  - arg: {name: floorplan_json_path, default: ''}
+  - arg: {name: use_floorplan_prior, default: 'true'}
+  # HFLEX-EQA
+  - include:
+      file: $(find-pkg-share hflex_eqa_ros)/launch/habitat/habitat_hflex_eqa.launch.yaml
+      arg:
+        - {name: question, value: $(var question)}
+        - {name: floorplan_nodes, value: $(var floorplan_nodes)}
+        - {name: floorplan_edges, value: $(var floorplan_edges)}
+        - {name: floorplan_source, value: $(var floorplan_source)}
+        - {name: floorplan_json_path, value: $(var floorplan_json_path)}
+        - {name: use_floorplan_prior, value: $(var use_floorplan_prior)}
+
+  # Hydra
+  - include:
+      file: $(find-pkg-share hydra_ros)/launch/sim/habitat.launch.yaml
+      arg:
+        - {name: vlm_room_classification, value: 'true'}
+        - {name: log_path, value: $(var log_path)}
+        - {name: start_visualizer, value: 'true'}
+        - {name: start_rviz, value: 'true'}
+
+  # Habitat sim
+  - include:
+      file: $(find-pkg-share habitat_ros)/launch/habitat.launch.yaml
+      arg:
+        - {name: scene_file, value: $(var scene_file)}
+        - {name: path_topic_name, value: /hflex_eqa/low_level/planned_path}
+        - {name: sim_goal_topic_name, value: /hflex_eqa/low_level/sim_goal}
+        - {name: trigger_start_topic_name, value: /semantic_inference/ready}
+
+  # Task parsing
+  - group:
+      - set_remap: {from: new_labels, to: /hydra/labels/new_labels}
+      - include:
+          file: $(find-pkg-share vlms_ros)/launch/task_parsing.launch.yaml

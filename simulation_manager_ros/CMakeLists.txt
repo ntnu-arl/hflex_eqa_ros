@@ -3,7 +3,7 @@ project(simulation_manager_ros)
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
-find_package(hvlm_planner_msgs REQUIRED)
+find_package(hflex_eqa_msgs REQUIRED)
 
 install(PROGRAMS app/habitat_eqa_manager_node.py
         DESTINATION lib/${PROJECT_NAME}

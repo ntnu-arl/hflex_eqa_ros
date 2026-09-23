@@ -1,0 +1,30 @@
+---
+launch:
+  - arg:
+      name: question_topic
+      default: /habitat/question
+      description: Topic to subscribe for user questions
+  - arg:
+      name: question
+      default: ''
+      description: Optional question to override the one in the config files
+  - arg: {name: floorplan_nodes, default: '[]'}
+  - arg: {name: floorplan_edges, default: '[]'}
+  - arg: {name: floorplan_source, default: list}
+  - arg: {name: floorplan_json_path, default: ''}
+  - arg: {name: use_floorplan_prior, default: 'true'}
+  - include:
+      file: $(find-pkg-share hflex_eqa_ros)/launch/habitat/habitat_high_level.launch.yaml
+      arg:
+        - {name: question_topic, value: $(var question_topic)}
+        - {name: question, value: $(var question)}
+        - {name: floorplan_nodes, value: $(var floorplan_nodes)}
+        - {name: floorplan_edges, value: $(var floorplan_edges)}
+        - {name: floorplan_source, value: $(var floorplan_source)}
+        - {name: floorplan_json_path, value: $(var floorplan_json_path)}
+        - {name: use_floorplan_prior, value: $(var use_floorplan_prior)}
+  - include:
+      file: $(find-pkg-share hflex_eqa_ros)/launch/habitat/habitat_search_manager.launch.yaml
+      arg:
+        - {name: question_topic, value: $(var question_topic)}
+        - {name: question, value: $(var question)}

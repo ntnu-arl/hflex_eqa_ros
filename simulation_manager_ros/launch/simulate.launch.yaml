@@ -14,7 +14,7 @@ launch:
       description: Path to the launch file to start the simulation
   - arg:
       name: launch_pkg
-      default: hvlm_planner_ros
+      default: hflex_eqa_ros
       description: Package where the launch file is located
   - node:
       pkg: simulation_manager_ros
@@ -33,12 +33,12 @@ launch:
             launch_pkg: $(var launch_pkg)
       remap:
         - from: monitor
-          to: /hvlm_planner/search_manager/monitor
+          to: /hflex_eqa/search_manager/monitor
         - from: eqa_output
-          to: /hvlm_planner/vlms/eqa_planner_output
+          to: /hflex_eqa/vlms/eqa_planner_output
         - from: trigger_episode
-          to: /hvlm_planner/search_manager/trigger_step
+          to: /hflex_eqa/search_manager/trigger_step
         - from: agent_path
-          to: /hvlm_planner/low_level/planned_path
+          to: /hflex_eqa/low_level/planned_path
         - from: habitat_agent_path
           to: /habitat/goal_path

@@ -1,0 +1,10 @@
+<library path="hflex_eqa_ui">
+  <class
+    name="hflex_eqa_ui/EQAPanel"
+    type="hflex_eqa_ui::EQAPanel"
+    base_class_type="rviz_common::Panel">
+    <description>
+      Panel for starting EQA and publishing user questions.
+    </description>
+  </class>
+</library>

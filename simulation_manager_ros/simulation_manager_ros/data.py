@@ -40,7 +40,7 @@ import numpy as np
 import spark_config as sc
 from scipy.spatial.transform import Rotation as R
 
-from hvlm_planner_ros import LoggerInfo
+from hflex_eqa_ros import LoggerInfo
 
 choice_to_number = {"A": 0, "B": 1, "C": 2, "D": 3}
 

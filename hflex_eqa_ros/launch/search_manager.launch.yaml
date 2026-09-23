@@ -1,0 +1,140 @@
+---
+launch:
+  # ROS args
+  - arg: {name: use_sim_time, default: 'false', description: Use ROS sim time}
+  # Robot args
+  - arg: {name: robot_id, default: '0', description: Unique robot identifier}
+  - arg: {name: robot_frame, default: base_link, description: Robot body tf frame}
+  - arg: {name: odom_frame, default: world, description: Odometry (map) frame}
+  - arg: {name: map_frame, default: map, description: Backend scene graph frame}
+
+  # Semantic args
+  - arg: {name: use_task_labels, default: 'false', description: Whether to use task-specific labels}
+  - arg: {name: labelspace, default: $(if $(var use_task_labels) variable hm3d), description: Closed-set semantics description}
+
+  # Logging args
+  - arg: {name: glog_level_hflex_eqa, default: '0', description: Minimum severity for glog-based logging in hdyra}
+  - arg: {name: glog_verbosity_hflex_eqa, default: '0', description: Verbosity for glog-based logging in hydra}
+  - arg: {name: debug, default: 'false', description: Run hydra with gdbserver}
+  - arg: {name: print_missing, default: 'false', description: Have config utilities print all missing parameters when parsing configs}
+
+  # Config args
+  - arg: {name: config_path, description: Input config}
+  - arg: {name: input_config_path, description: ROS input config}
+  - arg: {name: labelspace_path, default: $(find-pkg-share hydra)/config/label_spaces/$(var labelspace)_label_space.yaml, description: Closed set label space for Hydra}
+
+  # Topics
+  - arg:
+      name: dsg_topic
+      default: /dsg_updates
+      description: Topic to subscribe for DSG updates
+  - arg:
+      name: occupancy_grid_topic
+      default: /occupancy_grid
+      description: Topic to subscribe for occupancy grid updates
+  - arg:
+      name: image_topic
+      default: /image
+  - arg:
+      name: question_topic
+      default: /question
+      description: Topic to subscribe for user questions
+  - arg:
+      name: ready_topic
+      default: /ready
+      description: Topic to subscribe for ready signal
+  - arg:
+      name: eqa_output_topic
+      default: /eqa_output
+      description: Topic to publish EQA outputs
+  - arg:
+      name: hlp_output_topic
+      default: /hlp_output
+      description: Topic to publish HLP outputs
+  - arg:
+      name: task_parsing_output_topic
+      default: /task_parsing_output
+      description: Topic to subscribe for task parsing outputs from the TaskParser module
+  - arg:
+      name: new_labels_topic
+      default: /new_labels
+      description: Topic to subscribe for new labels
+  - arg:
+      name: question_rooms_embeddings_topic
+      default: /question_rooms_embeddings
+      description: Topic to subscribe for question, room labels and room embeddings
+  - arg:
+      name: eqa_planner_output_topic
+      default: /eqa_planner_output
+      description: Topic to subscribe for EQA planner outputs from the EQAPlanner module
+  - arg:
+      name: failed_sim_goal_topic
+      default: /failed_sim_goal
+      description: Topic to subscribe for failed simulation goal signals from the Habitat node
+  # Question
+  - arg:
+      name: question
+      default: ''
+      description: Optional question to override the one in the question file
+
+  # Services
+  - arg:
+      name: trigger_eqa_service
+      default: /trigger_eqa
+      description: Service to trigger EQA module to answer the current question
+  - arg:
+      name: trigger_hlp_service
+      default: /trigger_hlp
+      description: Service to trigger HLP module to generate a plan for the current question
+  - arg:
+      name: task_parsing_service
+      default: /task_parsing
+      description: Topic to subscribe for task parsing outputs from the TaskParser module
+  - node:
+      pkg: hflex_eqa_ros
+      exec: hflex_eqa_ros_node
+      name: hflex_eqa
+      on_exit: shutdown
+      output: screen
+      launch-prefix: $(if $(var debug) 'gdbserver localhost:3000')
+      param:
+        - {name: use_sim_time, value: $(var use_sim_time)}
+      args: >-
+        --config-utilities-file $(var config_path)
+        --config-utilities-file $(var input_config_path)
+        --config-utilities-file $(var labelspace_path)
+        --config-utilities-file $(find-pkg-share hflex_eqa_ros)/config/sinks/low_level.yaml@low_level
+        --config-utilities-file $(find-pkg-share hflex_eqa_ros)/config/sinks/search_manager.yaml@search_manager
+        --config-utilities-yaml {print_missing: $(var print_missing), glog_level: $(var glog_level_hflex_eqa), glog_verbosity: $(var glog_verbosity_hflex_eqa)}
+        --config-utilities-yaml {question: $(var question), robot_id: $(var robot_id), odom_frame: $(var odom_frame), robot_frame: $(var robot_frame), map_frame: $(var map_frame)}
+      remap:
+        - from: /hflex_eqa/input/dsg
+          to: $(var dsg_topic)
+        - from: /hflex_eqa/input/occupancy_grid
+          to: $(var occupancy_grid_topic)
+        - from: /hflex_eqa/input/image
+          to: $(var image_topic)
+        - from: /hflex_eqa/input/question
+          to: $(var question_topic)
+        - from: /hflex_eqa/input/ready
+          to: $(var ready_topic)
+        - from: /hflex_eqa/search_manager/eqa_output
+          to: $(var eqa_output_topic)
+        - from: /hflex_eqa/search_manager/hlp_output
+          to: $(var hlp_output_topic)
+        - from: /hflex_eqa/input/task_parsing_output
+          to: $(var task_parsing_output_topic)
+        - from: /hflex_eqa/input/new_labels
+          to: $(var new_labels_topic)
+        - from: /hflex_eqa/input/question_rooms_embeddings
+          to: $(var question_rooms_embeddings_topic)
+        - from: /hflex_eqa/search_manager/eqa_planner_output
+          to: $(var eqa_planner_output_topic)
+        - from: /hflex_eqa/search_manager/failed_sim_goal
+          to: $(var failed_sim_goal_topic)
+        - from: /hflex_eqa/search_manager/trigger_eqa
+          to: $(var trigger_eqa_service)
+        - from: /hflex_eqa/search_manager/trigger_hlp
+          to: $(var trigger_hlp_service)
+        - from: /hflex_eqa/input/task_parsing
+          to: $(var task_parsing_service)

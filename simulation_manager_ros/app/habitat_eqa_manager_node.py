@@ -49,7 +49,7 @@ from nav_msgs.msg import Path
 from rclpy.node import Node
 from std_srvs.srv import Trigger
 
-from hvlm_planner_msgs.msg import EQAPlannerOutput, Monitor
+from hflex_eqa_msgs.msg import EQAPlannerOutput, Monitor
 from simulation_manager_ros import (
     DataConfig,
     State,

@@ -1,17 +1,17 @@
 # HFLEX-EQA ROS 2
 
-ROS 2 Jazzy interfaces for HFLEX-EQA, including planner nodes, RViz integration, Habitat launch files, benchmark orchestration, and the reusable real-robot scene-graph/planning launches. See the [`hvlm_planner` README](https://github.com/ntnu-arl/hvlm_planner/tree/hflex_eqa) for the complete Docker installation and experiment workflow.
+ROS 2 Jazzy interfaces for HFLEX-EQA, including planner nodes, RViz integration, Habitat launch files, benchmark orchestration, and the reusable real-robot scene-graph/planning launches. See the [`hflex_eqa` README](https://github.com/ntnu-arl/hflex_eqa/tree/main) for the complete Docker installation and experiment workflow.
 
 ## Packages
 
-- `hvlm_planner_msgs`: planner messages and services.
-- `hvlm_planner_ros`: C++/Python ROS wrappers and launch/config files.
-- `hvlm_ui`: RViz controls for questions, choices, and planner actions.
+- `hflex_eqa_msgs`: planner messages and services.
+- `hflex_eqa_ros`: C++/Python ROS wrappers and launch/config files.
+- `hflex_eqa_ui`: RViz controls for questions, choices, and planner actions.
 - `simulation_manager_ros`: OpenEQA/ExploreEQA episode runner and HM3D utilities.
 
 ## Build
 
-Import this repository through `hvlm_planner/install/default.repos` or `thor.repos`, then build from the workspace root:
+Import this repository through `hflex_eqa/install/default.repos` or `thor.repos`, then build from the workspace root:
 
 ```bash
 rosdep install --from-paths src --ignore-src -r -y
@@ -24,15 +24,15 @@ source install/setup.bash
 Run a single episode with:
 
 ```bash
-ros2 launch hvlm_planner_ros habitat_eqa.launch.yaml \
+ros2 launch hflex_eqa_ros habitat_eqa.launch.yaml \
   scene_file:=/developer/hm3d/val/<scene>/<scene>.basis.glb \
   question:="What color is the microwave?"
 ```
 
 The launch composes Habitat, semantic inference, Hydra, task parsing, and the hierarchical planner. Relevant configuration is in:
 
-- `hvlm_planner_ros/config/habitat/` for ROS topics and node behavior;
-- `hvlm_planner/config/habitat/` for planner behavior, VLMs, and prompts;
+- `hflex_eqa_ros/config/habitat/` for ROS topics and node behavior;
+- `hflex_eqa/config/habitat/` for planner behavior, VLMs, and prompts;
 - `simulation_manager_ros/config/habitat_open_eqa.yaml` for dataset paths and episode selection.
 
 For a benchmark loop, edit a copy of the simulation-manager config and run:
@@ -49,8 +49,8 @@ Set `data.dataset` to `openeqa` or `exploreeqa`. Results are written beneath the
 The two top-level launches were extracted from the deployment-specific ANYmal repository so that HFLEX-EQA can be deployed independently:
 
 ```bash
-ros2 launch hvlm_planner_ros scene_graph.launch.yaml
-ros2 launch hvlm_planner_ros eqa.launch.yaml
+ros2 launch hflex_eqa_ros scene_graph.launch.yaml
+ros2 launch hflex_eqa_ros eqa.launch.yaml
 ```
 
 `scene_graph.launch.yaml` expects RealSense color, aligned depth, and camera-info topics under `/camera/camera/`, plus TF frames `world`, `body`, and `camera_link`. Override remappings for other sensors. `eqa.launch.yaml` starts the high- and low-level planners and task parser. It loads `config/anymal/eqa_floorplan.json` by default; pass `floorplan_json_path` for a new building, or set `floorplan_source:=list` with `floorplan_nodes` and `floorplan_edges`.
@@ -59,7 +59,7 @@ The example floorplan is the weak topological prior used for the paper deploymen
 
 ## Tests and formatting
 
-Run package tests with `colcon test --packages-select hvlm_planner_ros hvlm_ui simulation_manager_ros`, inspect them with `colcon test-result --verbose`, and run `pre-commit run --all-files` before submitting changes.
+Run package tests with `colcon test --packages-select hflex_eqa_ros hflex_eqa_ui simulation_manager_ros`, inspect them with `colcon test-result --verbose`, and run `pre-commit run --all-files` before submitting changes.
 
 ## License
 
