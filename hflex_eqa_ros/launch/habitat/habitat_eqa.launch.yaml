@@ -8,6 +8,7 @@ launch:
   - arg: {name: floorplan_source, default: list}
   - arg: {name: floorplan_json_path, default: ''}
   - arg: {name: use_floorplan_prior, default: 'true'}
+  - arg: {name: triggered, default: 'false', description: Wait for an external trigger before each EQA iteration}
   # HFLEX-EQA
   - include:
       file: $(find-pkg-share hflex_eqa_ros)/launch/habitat/habitat_hflex_eqa.launch.yaml
@@ -18,6 +19,8 @@ launch:
         - {name: floorplan_source, value: $(var floorplan_source)}
         - {name: floorplan_json_path, value: $(var floorplan_json_path)}
         - {name: use_floorplan_prior, value: $(var use_floorplan_prior)}
+        - {name: triggered, value: $(var triggered)}
+  - node: {name: rviz, pkg: rviz2, exec: rviz2, args: -d $(find-pkg-share hflex_eqa_ros)/rviz/habitat.rviz}
 
   # Hydra
   - include:
@@ -26,7 +29,7 @@ launch:
         - {name: vlm_room_classification, value: 'true'}
         - {name: log_path, value: $(var log_path)}
         - {name: start_visualizer, value: 'true'}
-        - {name: start_rviz, value: 'true'}
+        - {name: start_rviz, value: 'false'}
 
   # Habitat sim
   - include:
@@ -34,7 +37,6 @@ launch:
       arg:
         - {name: scene_file, value: $(var scene_file)}
         - {name: path_topic_name, value: /hflex_eqa/low_level/planned_path}
-        - {name: sim_goal_topic_name, value: /hflex_eqa/low_level/sim_goal}
         - {name: trigger_start_topic_name, value: /semantic_inference/ready}
 
   # Task parsing

@@ -22,6 +22,7 @@ launch:
   - arg: {name: config_path, description: Input config}
   - arg: {name: input_config_path, description: ROS input config}
   - arg: {name: labelspace_path, default: $(find-pkg-share hydra)/config/label_spaces/$(var labelspace)_label_space.yaml, description: Closed set label space for Hydra}
+  - arg: {name: triggered, default: 'true', description: Wait for an external trigger before each EQA iteration}
 
   # Topics
   - arg:
@@ -107,6 +108,7 @@ launch:
         --config-utilities-file $(find-pkg-share hflex_eqa_ros)/config/sinks/search_manager.yaml@search_manager
         --config-utilities-yaml {print_missing: $(var print_missing), glog_level: $(var glog_level_hflex_eqa), glog_verbosity: $(var glog_verbosity_hflex_eqa)}
         --config-utilities-yaml {question: $(var question), robot_id: $(var robot_id), odom_frame: $(var odom_frame), robot_frame: $(var robot_frame), map_frame: $(var map_frame)}
+        --config-utilities-yaml {search_manager: {triggered: $(var triggered)}}
       remap:
         - from: /hflex_eqa/input/dsg
           to: $(var dsg_topic)

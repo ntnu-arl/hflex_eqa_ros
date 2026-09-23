@@ -17,6 +17,7 @@ launch:
   # Config args
   - arg: {name: config_path_sm, default: $(find-pkg-share hflex_eqa)/config/habitat/habitat.yaml, description: Input config}
   - arg: {name: input_config_path_sm, default: $(find-pkg-share hflex_eqa_ros)/config/habitat/graph_receiver.yaml, description: ROS input config}
+  - arg: {name: triggered, default: 'false'}
 
   # Topics
   - arg:
@@ -97,6 +98,7 @@ launch:
         - {name: use_task_labels, value: $(var use_task_labels)}
         - {name: labelspace, value: $(var labelspace)}
         - {name: config_path, value: $(var config_path_sm)}
+        - {name: triggered, value: $(var triggered)}
         - {name: input_config_path, value: $(var input_config_path_sm)}
         - {name: dsg_topic, value: $(var dsg_topic_sm)}
         - {name: occupancy_grid_topic, value: $(var occupancy_grid_topic)}

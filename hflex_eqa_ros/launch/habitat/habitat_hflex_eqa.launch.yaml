@@ -13,6 +13,7 @@ launch:
   - arg: {name: floorplan_source, default: list}
   - arg: {name: floorplan_json_path, default: ''}
   - arg: {name: use_floorplan_prior, default: 'true'}
+  - arg: {name: triggered, default: 'false'}
   - include:
       file: $(find-pkg-share hflex_eqa_ros)/launch/habitat/habitat_high_level.launch.yaml
       arg:
@@ -28,3 +29,4 @@ launch:
       arg:
         - {name: question_topic, value: $(var question_topic)}
         - {name: question, value: $(var question)}
+        - {name: triggered, value: $(var triggered)}

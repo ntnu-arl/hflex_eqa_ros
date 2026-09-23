@@ -181,6 +181,7 @@ class HabitatSimulationManagerNode(Node):
                 "choices",
                 "use_choices",
                 "gt_semantics",
+                "triggered",
             ]:
                 ros_cmd.append(f"{key}:='{value}'")
             else:
@@ -387,6 +388,7 @@ class HabitatSimulationManagerNode(Node):
             "floorplan_nodes": floorplan_data.get("nodes", []),
             "floorplan_edges": floorplan_data.get("edges", []),
             "use_floorplan_prior": self.config.use_floorplan_prior,
+            "triggered": str(self.config.trigger).lower(),
         }
 
         self._launch_episode = False
